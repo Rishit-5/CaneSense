@@ -65,7 +65,7 @@ class CustomConvNet(nn.Module):
         out = self.layer4(out)
         out = self.layer5(out)
         out = self.gap(out)
-        out = out.view(-1, 6)
+        out = out.view(-1, 2)
 
         return out
 
@@ -95,10 +95,10 @@ def main():
     transforms_test = transforms.Compose([transforms.Resize((64, 64)),
                                           transforms.ToTensor()])
 
-    train_data_set = CustomImageDataset(data_set_path="AugmentedImages/train", transforms=transforms_train)
+    train_data_set = CustomImageDataset(data_set_path="surfaces/train", transforms=transforms_train)
     train_loader = DataLoader(train_data_set, batch_size=hyper_param_batch, shuffle=True)
 
-    test_data_set = CustomImageDataset(data_set_path="AugmentedImages/test", transforms=transforms_test)
+    test_data_set = CustomImageDataset(data_set_path="surfaces/test", transforms=transforms_test)
     test_loader = DataLoader(test_data_set, batch_size=hyper_param_batch, shuffle=True)
 
     if not (train_data_set.num_classes == test_data_set.num_classes):
@@ -139,5 +139,10 @@ def main():
 
     # Save
     torch.save(net.state_dict(), PATH)
+    # Export the model to ONNX format
+    dummy_input = torch.randn(1, 3, 64, 64).to(device)  # Adjust input size accordingly
+    onnx_path = "surface_classifer.onnx"
+    torch.onnx.export(net, dummy_input, onnx_path)
+
 if __name__ == '__main__':
     main()
