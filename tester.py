@@ -36,6 +36,7 @@ time2 = time.time()
 # Input to the model
 
 print("Time: " + str(time2-time1))
+print((time2-time1)/total)
 
 import torch
 import torch.nn as nn

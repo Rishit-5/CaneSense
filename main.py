@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torch import nn, optim
 from torchvision import transforms
-
+import torch.nn.functional as F
 
 class CustomImageDataset(Dataset):
     def read_data_set(self):
@@ -66,6 +66,7 @@ class CustomConvNet(nn.Module):
         out = self.layer5(out)
         out = self.gap(out)
         out = out.view(-1, 2)
+        out = F.softmax(out, dim=1)
 
         return out
 
